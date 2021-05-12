@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+{% block header %}
+<head>
+    <meta charset="UTF-8">
+    <title>Smart To Do</title>
+</head>
+{% endblock %}
+<body>
+{% block menu %}
+{% if user.is_authenticated %}
+    Logged name as {{ user.username }}
+    <br>
+<form action="{% url 'log_out' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">logout</button>
+</form>
+{% else %}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
+{% block footer %}
+<footer>
+    <p>Footer</p>
+</footer>
+{% endblock %}
+</body>
+</html>
