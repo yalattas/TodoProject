@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 
 # To import form from Django
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 # To import Django User model and utilize it
 from django.contrib.auth.models import User
@@ -10,11 +10,11 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 
 # To maintain user session and allow him to login
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 
 # Create your views here.
 def mainPage(request):
-    return redirect('sign_up')
+    return render(request, 'pages/index.html')
 def sign_up(request):
     if request.method == 'GET':
         #To utilize Django Form in view
@@ -26,6 +26,7 @@ def sign_up(request):
                 #Create a new user
                 user = User.objects.create_user(request.POST['username'], password=request.POST['password2'])
                 user.save()
+                # You can call you own login method but you need valid credentials
                 login(request, user)
                 return redirect('current_todos')
             # Require library import
@@ -45,3 +46,16 @@ def log_out(request):
         return redirect('mainPage')
     else:
         return redirect('mainPage')
+
+def log_in(request):
+    # Require import AuthenticationForm
+    if request.method == 'GET':
+        return render(request, 'pages/login.html', {'form': AuthenticationForm()})
+    else:
+        # Require import authenticate to check credentials against DB records
+        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+        if user is None:
+            return render(request, 'pages/login.html', {'form': AuthenticationForm(), 'errorMessage':'Wrong username or password'})
+        else:
+            login(request, user)
+            return redirect('current_todos')
