@@ -16,6 +16,8 @@
 <form action="{% url 'log_out' %}" method="post">
     {% csrf_token %}
     <button type="submit">logout</button>
+    <br>
+    <a href="{% url 'current_todos' %}">Current Todos</a>
 </form>
 {% else %}
 <a href="{% url 'mainPage' %}">Home</a>

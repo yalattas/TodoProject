@@ -15,6 +15,9 @@ from django.contrib.auth import login, logout, authenticate
 # To be used as a form to allow user to submit data into the model/DB
 from .forms import TodoForm
 
+# Required to use the model in the view or business logic
+from .models import Todo
+
 # Create your views here.
 def mainPage(request):
     return render(request, 'pages/index.html')
@@ -40,7 +43,12 @@ def sign_up(request):
             return render(request, "pages/sign_up_user.html", {'form': UserCreationForm(), 'errorMessage':'Password did not match'})
 
 def current_todos(request):
-    return render(request, 'pages/current_todos.html')
+    # Require to import the model at the top, all() mean get all todos regardless of the user
+    # todos = Todo.objects.all()
+    # to return objects specific to signed in user
+    todos = Todo.objects.filter(user=request.user, date_completed__isnull=True)
+
+    return render(request, 'pages/current_todos.html', {'todoObjs':todos})
 
 def log_out(request):
     # Chrome will automatically open many href and maybe log out user accidentally. That's why we look for POST only NOT GET

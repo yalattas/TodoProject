@@ -3,5 +3,11 @@
 {% block content %}
 
 <h1>Your to Do list</h1>
-
+<ul>
+    {% for todo in todoObjs %}
+        {% if todo.important %}<b>{% endif %}
+            <li>{{ todo.title }}</li>
+        {% if todo.important %}</b>{% endif %}
+    {% endfor %}
+</ul>
 {% endblock %}
