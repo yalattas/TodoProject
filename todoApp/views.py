@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 # To import form from Django
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -17,6 +17,11 @@ from .forms import TodoForm
 
 # Required to use the model in the view or business logic
 from .models import Todo
+
+from django.utils import timezone
+
+# Prevent visitors from accessing certain pages
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def mainPage(request):
@@ -42,14 +47,8 @@ def sign_up(request):
             # Password is not matched message with special message shown
             return render(request, "pages/sign_up_user.html", {'form': UserCreationForm(), 'errorMessage':'Password did not match'})
 
-def current_todos(request):
-    # Require to import the model at the top, all() mean get all todos regardless of the user
-    # todos = Todo.objects.all()
-    # to return objects specific to signed in user
-    todos = Todo.objects.filter(user=request.user, date_completed__isnull=True)
-
-    return render(request, 'pages/current_todos.html', {'todoObjs':todos})
-
+# login_required requires import at the top
+@login_required
 def log_out(request):
     # Chrome will automatically open many href and maybe log out user accidentally. That's why we look for POST only NOT GET
     if request.method == 'POST':
@@ -71,6 +70,7 @@ def log_in(request):
             login(request, user)
             return redirect('current_todos')
 
+@login_required
 # Requires to import a forms model aligned with the chosen fields
 def create_todo(request):
     if request.method == 'GET':
@@ -84,8 +84,58 @@ def create_todo(request):
             #To link the object with the user in the DB
             new_todo_object.user = request.user
             new_todo_object.save()
-            return redirect('mainPage')
+            return redirect('current_todos')
         # Error code "ValueError" taken from the generated error in the web
         # Its meant to prevent user from crossing DB validation or field restrictions
         except ValueError:
             return render(request, 'pages/create_todo.html', {'form': TodoForm(), 'errorMessage':'Bad data entered'})
+
+@login_required
+def current_todos(request):
+    # Require to import the model at the top, all() mean get all todos regardless of the user
+    # todos = Todo.objects.all()
+    # to return objects specific to signed in user
+    todos = Todo.objects.filter(user=request.user, date_completed__isnull=True)
+
+    return render(request, 'pages/current_todos.html', {'todoObjs':todos})
+
+# todo_pk is coming from the URL file as a variable
+@login_required
+def view_todo(request, todo_pk):
+    #require to import get_object_or_404
+    todo_detail = get_object_or_404(Todo, pk=todo_pk, user=request.user)
+    if request.method == 'GET':
+        formData = TodoForm(instance=todo_detail)
+        return render(request, 'pages/todo_details.html', {'todoID': todo_detail, 'formDetails': formData})
+    else:
+        try:
+            form = TodoForm(request.POST, instance=todo_detail)
+            form.save()
+            return redirect('current_todos')
+        except ValueError:
+            return render(request, 'pages/todo_details.html', {'todoID': todo_detail, 'formDetails': form, 'errorMessage':'Bad data entered'})
+
+@login_required
+def completed_todo(request):
+    completed_todos = Todo.objects.filter(user=request.user, date_completed__isnull=False).order_by('-date_completed')
+    return render(request, 'pages/completed_todos.html', {'comp_todos':completed_todos})
+
+@login_required
+def complete_todo(request, todo_pk):
+    if request.method == 'POST':
+        todo_detail = get_object_or_404(Todo, pk=todo_pk, user=request.user)
+        # Timezone needs to be imported at the very top of this page
+        todo_detail.date_completed = timezone.now()
+        todo_detail.save()
+        return redirect('current_todos')
+    else:
+        return redirect('current_todos')
+
+@login_required
+def delete_todo(request, todo_pk):
+    if request.method == 'POST':
+        todo_details = get_object_or_404(Todo, pk=todo_pk, user=request.user)
+        todo_details.delete()
+        return redirect('current_todos')
+    else:
+        return redirect('current_todos')

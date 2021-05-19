@@ -24,7 +24,6 @@ SECRET_KEY = 'django-insecure-std%)qg#giy(4$wpv1a=)#6x)-vp82)tb3_-h4#r6ke=ad(p(k
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
@@ -128,3 +127,6 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# To restrict access of certain pages to logged-in people and redirect non logged into below page
+LOGIN_URL = '/login'

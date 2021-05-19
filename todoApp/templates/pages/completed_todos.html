@@ -1,15 +1,15 @@
 {% extends "main/base.html" %}
 
 {% block content %}
-<a href="{% url 'create_todo' %}">create a new To Do</a>
-<h1>Your to Do list</h1>
+
+<h1>Your completed to Do list</h1>
 <ul>
-    {% for todo in todoObjs %}
+    {% for todo in comp_todos %}
         {% if todo.important %}<b>{% endif %}
             <li><a href="{% url 'view_todo' todo.id %}"> {{ todo.title }}</a></li>
         {% if todo.important %}</b>{% endif %}
+    {{ todo.date_completed|date:'M j Y H:i' }}
+
     {% endfor %}
 </ul>
-<br>
-<a href="{% url 'completed_todo' %}">Completed tasks</a>
 {% endblock %}
