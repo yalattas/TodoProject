@@ -133,11 +133,11 @@ STATIC_URL = '/static/'
 #DEFAULT_FILE_STORAGE = 'TodoProj.storage_backends.MediaStorage' #the media storage configurations
 #AWS_S3_REGION_NAME = 'eu-west-1'
 
-#AWS_ACCESS_KEY_ID = 'AKIAV4MPWR5R5AWDIN6O'
-#AWS_SECRET_ACCESS_KEY = '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'
+#AWS_ACCESS_KEY_ID = 'aaa'
+#AWS_SECRET_ACCESS_KEY = 'aaa'
 
-#AWS_STORAGE_BUCKET_NAME = 'munjiz-prod'
-#AWS_S3_CUSTOM_DOMAIN = 'd2hg1jr3fzt8z2.cloudfront.net'
+#AWS_STORAGE_BUCKET_NAME = 'aaa'
+#AWS_S3_CUSTOM_DOMAIN = 'aaa'
 
 #AWS_LOCATION = 'static'
 #STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
