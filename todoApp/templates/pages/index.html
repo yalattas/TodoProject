@@ -1,7 +1,9 @@
 {% extends "main/base.html" %}
 
 {% block content %}
-
+<!-- Require to load static first before running it -->
+{% load static %}
 <h1>Home Page is here</h1>
 
+<img src="{% static 'homePage/background.jpg' %}" width="40" height="50"/><br>
 {% endblock %}

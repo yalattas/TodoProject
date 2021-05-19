@@ -9,3 +9,4 @@ class Todo(models.Model):
     date_completed = models.DateTimeField(null=True, blank=True)
     important = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    img = models.ImageField(upload_to='media', blank=True, null=True)
